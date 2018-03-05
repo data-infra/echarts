@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="../../js/echarts-all-3.js"></script>
+       <script type="text/javascript" src="../../js/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="../../js/extension/jquery-2.2.4.js"></script>
+       <script type="text/javascript" src="../../js/map/js/china.js"></script>
+       <script type="text/javascript" src="../../js/map/js/world.js"></script>
+       <script type="text/javascript" src="../../js/api.js"></script>
+       <script type="text/javascript" src="../../js/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+//myChart.showLoading();
+var base = +new Date(1968, 9, 3);
+var oneDay = 24 * 3600 * 1000;
+var date = [];
+var data1 = [Math.round(Math.random() * 300)];
+var data2 = [Math.round(Math.random() * 300)];
+
+for (var i = 1; i < 300; i++)
+{
+    var now = new Date(base += oneDay);
+    date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
+    data1.push(Math.round((Math.random()* 300) ));
+    data2.push(Math.round((Math.random()* 300) ));
+}
+
+
+
+    option = {
+
+        tooltip : {
+            trigger: 'item'
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},   // '辅助线开关'
+                dataView : {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+               /* mark : '辅助线开关',
+                markUndo : '删除辅助线',
+                markClear : '清空辅助线',
+                dataZoom : '区域缩放',
+                dataZoomReset : '区域缩放后退',
+                dataView : '数据视图',
+                lineChart : '折线图切换',
+                barChart : '柱形图切换',
+                restore : '还原',
+                saveAsImage : '保存为图片'*/
+            }
+        },
+        calculable : true,   //是否允许拖拽
+        legend: {
+            data:['类别1', '类别2'],    //series中根据名称区分
+            itemGap: 5
+        },
+        grid: {
+            top: '12%',
+            left: '1%',
+            right: '10%',
+            containLabel: true   //grid 区域是否包含坐标轴的刻度标签，
+        },
+        xAxis: [
+            {
+                name:'时间',
+                type : 'category',
+                data : date
+            }
+        ],
+        yAxis: [
+            {
+                type : 'value',
+                name : 'y1值',
+                axisLabel: {
+                    formatter: function (a) {
+                        a = +a;
+                        return isFinite(a)
+                            ? echarts.format.addCommas(+a / 1000)
+                            : '';
+                    }
+                }
+            }/*,
+            {
+                type: 'value',
+                name: 'y2值',
+                min: 0,
+                max: 25,
+                interval: 5,
+                axisLabel: {
+                    formatter: '{value} °C'
+                }
+            }*/
+        ],
+        //dataZoom 组件可 同时存在多个，起到共同控制的作用。如果多个 dataZoom 组件共同控制同一个数轴，他们会自动联动。
+        dataZoom: [
+                //横坐标控制缩放移动的区域
+            {
+                show: true,
+                start: 94,
+                end: 100
+            },
+            {
+                type: 'inside',   //坐标系内通过鼠标拖动（x数据）和滚轮（y数据）来控制数据
+                start: 94,
+                end: 100
+            },
+                //纵坐标控制缩放移动的区域
+            {
+                show: true,
+                yAxisIndex: 0,
+                filterMode: 'empty',  // 即主轴 'filter'，辅轴 'empty'。  'filter'：当前数据窗口外的数据，被 过滤掉。即会影响其他轴的数据范围。  'empty'：当前数据窗口外的数据，被 设置为空。即不会影响其他轴的数据范围。
+                width: 30,
+                height: '80%',
+                showDataShadow: false,
+                left: '93%'
+            }
+        ],
+        series : [
+            {
+                name: '类别1',
+                type: 'line',
+               // yAxisIndex: 1,   //对应的y轴
+                data: data1,
+                //标签显示
+                label: {
+                    normal: {
+                        show:true,
+                        color: '#125709',
+                        position: 'top',
+                        formatter: '{c}'
+                    }
+                },
+            },
+            {
+                name: '类别2',
+                type: 'bar',
+                data: data2,
+                //标签显示
+                label: {
+                    normal: {
+                        show:true,
+                        color: '#125709',
+                        position: 'top',
+                        formatter: '{c}'
+                    }
+                },
+                itemStyle:{
+                    normal:{
+                        color:'#0b4f7e'
+                    },
+                    emphasis:{
+                        color:'#dcc73a'
+                    }
+                }
+            }
+        ]
+    };
+
+    myChart.setOption(option);
+
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+
+       </script>
+   </body>
+</html>
