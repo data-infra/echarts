@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="../../js/echarts-all-3.js"></script>
+       <script type="text/javascript" src="../../js/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="../../js/map/js/china.js"></script>
+       <script type="text/javascript" src="../../js/map/js/world.js"></script>
+       <script type="text/javascript" src="../../js/api.js"></script>
+       <script type="text/javascript" src="../../js/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+var locations = [{
+    name: '上海',
+    coord: [121.472644, 31.231706]
+}, {
+    name: '北京',
+    coord: [116.405285, 39.904989]
+}, {
+    name: '广东',
+    coord: [113.280637, 23.839463714285714]
+}];
+option = {
+    tooltip: {
+        trigger: 'item',
+        formatter: '{b}'
+    },
+    series: [
+        {
+            name: '中国',
+            type: 'map',
+            mapType: 'china',
+            selectedMode : 'multiple',
+            label: {
+                normal: {
+                    show: true
+                },
+                emphasis: {
+                    show: true
+                }
+            }
+        }
+    ]
+};
+
+var currentLoc = 0;
+setInterval(function () {
+    myChart.setOption({
+        series: [{
+            center: locations[currentLoc].coord,
+            zoom: 4,
+            data:[
+                {name: locations[currentLoc].name, selected: true}
+            ],
+            animationDurationUpdate: 1000,
+            animationEasingUpdate: 'cubicInOut'
+        }]
+    });
+    currentLoc = (currentLoc + 1) % locations.length;
+}, 2000);
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>

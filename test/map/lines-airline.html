@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="../../js/echarts-all-3.js"></script>
+       <script type="text/javascript" src="../../js/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="../../js/extension/jquery-2.2.4.js"></script>
+       <script type="text/javascript" src="../../js/map/js/china.js"></script>
+       <script type="text/javascript" src="../../js/map/js/world.js"></script>
+       <script type="text/javascript" src="../../js/api.js"></script>
+       <script type="text/javascript" src="../../js/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+app.title = '65k+ 飞机航线';
+
+myChart.showLoading();
+
+$.get('flights.json', function(data) {
+
+    myChart.hideLoading();
+
+    function getAirportCoord(idx) {
+        return [data.airports[idx][3], data.airports[idx][4]];
+    }
+    var routes = data.routes.map(function (airline) {
+        return [
+            getAirportCoord(airline[1]),
+            getAirportCoord(airline[2])
+        ];
+    });
+
+    myChart.setOption(option = {
+        toolbox: {
+            show : true,
+            feature : {
+                dataView : {show: true, readOnly: false},
+                saveAsImage : {show: true}
+                /* mark : '辅助线开关',
+                 markUndo : '删除辅助线',
+                 markClear : '清空辅助线',
+                 dataZoom : '区域缩放',
+                 dataZoomReset : '区域缩放后退',
+                 dataView : '数据视图',
+                 lineChart : '折线图切换',
+                 barChart : '柱形图切换',
+                 restore : '还原',
+                 saveAsImage : '保存为图片'*/
+            }
+        },
+        title: {
+            text: 'World Flights',
+            left: 'center',
+            textStyle: {
+                color: '#eee'
+            }
+        },
+        backgroundColor: '#003',
+        tooltip: {
+            formatter: function (param) {
+                var route = data.routes[param.dataIndex];
+                return data.airports[route[1]][1] + ' > ' + data.airports[route[2]][1];
+            }
+        },
+        geo: {
+            map: 'world',
+            left: 0,
+            right: 0,
+            silent: true,
+            itemStyle: {
+                normal: {
+                    borderColor: '#003',
+                    color: '#005'
+                }
+            }
+        },
+        series: [{
+            type: 'lines',
+            coordinateSystem: 'geo',
+            data: routes,
+            large: true,
+            largeThreshold: 100,
+            lineStyle: {
+                normal: {
+                    opacity: 0.05,
+                    width: 0.5,
+                    curveness: 0.3
+                }
+            },
+            // 设置混合模式为叠加
+            blendMode: 'lighter'
+        }]
+    });
+});;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>
