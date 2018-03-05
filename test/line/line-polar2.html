@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="../../js/echarts-all-3.js"></script>
+       <script type="text/javascript" src="../../js/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="../../js/map/js/china.js"></script>
+       <script type="text/javascript" src="../../js/map/js/world.js"></script>
+       <script type="text/javascript" src="../../js/api.js"></script>
+       <script type="text/javascript" src="../../js/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+var data = [];
+
+for (var i = 0; i <= 360; i++) {
+    var t = i / 180 * Math.PI;
+    var r = Math.sin(2 * t) * Math.cos(2 * t);
+    data.push([r, i]);
+}
+
+option = {
+    toolbox: {
+        show : true,
+        feature : {
+            dataView : {show: true, readOnly: false},
+            saveAsImage : {show: true}
+            /* mark : '辅助线开关',
+             markUndo : '删除辅助线',
+             markClear : '清空辅助线',
+             dataZoom : '区域缩放',
+             dataZoomReset : '区域缩放后退',
+             dataView : '数据视图',
+             lineChart : '折线图切换',
+             barChart : '柱形图切换',
+             restore : '还原',
+             saveAsImage : '保存为图片'*/
+        }
+    },
+    title: {
+        text: '极坐标双数值轴'
+    },
+    legend: {
+        data: ['line']
+    },
+    polar: {
+        center: ['50%', '54%']
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross'
+        }
+    },
+    angleAxis: {
+        type: 'value',
+        startAngle: 0
+    },
+    radiusAxis: {
+        min: 0
+    },
+    series: [{
+        coordinateSystem: 'polar',
+        name: 'line',
+        type: 'line',
+        showSymbol: false,
+        data: data
+    }],
+    animationDuration: 2000
+};;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="../../js/echarts-all-3.js"></script>
+       <script type="text/javascript" src="../../js/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="../../js/map/js/china.js"></script>
+       <script type="text/javascript" src="../../js/map/js/world.js"></script>
+       <script type="text/javascript" src="../../js/api.js"></script>
+       <script type="text/javascript" src="../../js/extension/bmap.min.js"></script>
+
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+var base = +new Date(1968, 9, 3);
+var oneDay = 24 * 3600 * 1000;
+var date = [];
+
+var data = [Math.round(Math.random() * 300)];
+
+for (var i = 1; i < 300; i++) {
+    var now = new Date(base += oneDay);
+    date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
+    data.push(Math.round((Math.random()* 300) ));
+}
+
+option = {
+    tooltip: {
+        trigger: 'axis',
+        position: function (pt) {
+            return [pt[0], '10%'];   //横坐标为坐标点，纵坐标为10%
+        }
+    },
+    title: {
+        left: 'center',
+        text: '大数据量面积图',
+    },
+    toolbox: {
+        feature: {
+            dataZoom: {
+                yAxisIndex: 'none'
+            },
+            restore: {},
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: date
+    },
+    yAxis: {
+        type: 'value',
+       // boundaryGap: [0, '100%']
+    },
+    dataZoom: [{
+        type: 'inside',
+        start: 0,
+        end: 3
+    }, {
+        start: 0,
+        end: 10,
+        handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+        handleSize: '80%',
+        handleStyle: {
+            color: '#fff',
+            shadowBlur: 3,
+            shadowColor: 'rgba(0, 0, 0, 0.6)',
+            shadowOffsetX: 2,
+            shadowOffsetY: 2
+        }
+    }],
+    series: [
+        {
+            name:'模拟数据',
+            type:'line',
+            smooth:true,
+            symbol: 'none',   //ECharts 提供的标记类型包括 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow'
+           // sampling: 'average',
+            symbolSize:15,
+            //这里的标签现在设置不成功
+            label: {
+                normal: {
+                    show:true,
+                    color: '#125709',
+                    position: 'top',
+                    formatter: '{c}'
+                }
+            },
+            //曲线样式
+            itemStyle: {
+                normal: {
+                    color: 'red',
+                }
+            },
+            //标注线
+           /* markLine: {
+                silent: true,
+                data: [{
+                    yAxis: 50
+                }, {
+                    yAxis: 100
+                }, {
+                    yAxis: 150
+                }, {
+                    yAxis: 200
+                }, {
+                    yAxis: 300
+                }]
+            },*/
+            //区域样式
+         /*   areaStyle: {
+                normal: {
+                    // 线性渐变，前四个参数分别是 x0, y0, x2, y2, 范围从 0 - 1，相当于在图形包围盒中的百分比，如果最后一个参数传 `true`，则该四个值是绝对的像素位置
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#125709'   // 0% 处的颜色
+                    }, {
+                        offset: 1,
+                        color: '#0f4d6e'   // 100% 处的颜色
+                    }])
+
+                    // 径向渐变，前三个参数分别是圆心 x, y 和半径，取值同线性渐变
+/!*                    color: new echarts.graphic.RadialGradient(0.5, 0.5, 0.5, [...], false)
+// 纹理填充
+color: new echarts.graphic.Pattern(
+        imageDom, // 支持为 HTMLImageElement, HTMLCanvasElement，不支持路径字符串
+        'repeat' // 是否平铺, 可以是 repeat-x, repeat-y, no-repeat
+)*!/
+
+
+                }
+            },*/
+            data: data
+        }
+    ]
+};
+;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>
