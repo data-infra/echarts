@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="../../js/echarts-all-3.js"></script>
+       <script type="text/javascript" src="../../js/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="../../js/extension/jquery-2.2.4.js"></script>
+       <script type="text/javascript" src="../../js/map/js/china.js"></script>
+       <script type="text/javascript" src="../../js/map/js/world.js"></script>
+       <script type="text/javascript" src="../../js/api.js"></script>
+       <script type="text/javascript" src="../../js/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+myChart.showLoading();
+
+$.get('weibo.json', function (weiboData) {
+    myChart.hideLoading();
+
+    weiboData = weiboData.map(function (serieData, idx) {
+        var px = serieData[0] / 1000;
+        var py = serieData[1] / 1000;
+        var res = [[px, py]];
+
+        for (var i = 2; i < serieData.length; i += 2) {
+            var dx = serieData[i] / 1000;
+            var dy = serieData[i + 1] / 1000;
+            var x = px + dx;
+            var y = py + dy;
+            res.push([x.toFixed(2), y.toFixed(2), 1]);
+
+            px = x;
+            py = y;
+        }
+        return res;
+    });
+    myChart.setOption(option = {
+        toolbox: {
+            show : true,
+            feature : {
+                dataView : {show: true, readOnly: false},
+                saveAsImage : {show: true}
+                /* mark : '辅助线开关',
+                 markUndo : '删除辅助线',
+                 markClear : '清空辅助线',
+                 dataZoom : '区域缩放',
+                 dataZoomReset : '区域缩放后退',
+                 dataView : '数据视图',
+                 lineChart : '折线图切换',
+                 barChart : '柱形图切换',
+                 restore : '还原',
+                 saveAsImage : '保存为图片'*/
+            }
+        },
+        backgroundColor: '#404a59',
+        title : {
+            text: '微博签到数据点亮中国',
+            subtext: 'From ThinkGIS',
+            sublink: 'http://www.thinkgis.cn/public/sina',
+            left: 'center',
+            top: 'top',
+            textStyle: {
+                color: '#fff'
+            }
+        },
+        tooltip: {},
+        legend: {
+            left: 'left',
+            data: ['强', '中', '弱'],
+            textStyle: {
+                color: '#ccc'
+            }
+        },
+        geo: {
+            name: '强',
+            type: 'scatter',
+            map: 'china',
+            label: {
+                emphasis: {
+                    show: false
+                }
+            },
+            itemStyle: {
+                normal: {
+                    areaColor: '#323c48',
+                    borderColor: '#111'
+                },
+                emphasis: {
+                    areaColor: '#2a333d'
+                }
+            }
+        },
+        series: [{
+            name: '弱',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            symbolSize: 1,
+            large: true,
+            itemStyle: {
+                normal: {
+                    shadowBlur: 2,
+                    shadowColor: 'rgba(37, 140, 249, 0.8)',
+                    color: 'rgba(37, 140, 249, 0.8)'
+                }
+            },
+            data: weiboData[0]
+        }, {
+            name: '中',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            symbolSize: 1,
+            large: true,
+            itemStyle: {
+                normal: {
+                    shadowBlur: 2,
+                    shadowColor: 'rgba(14, 241, 242, 0.8)',
+                    color: 'rgba(14, 241, 242, 0.8)'
+                }
+            },
+            data: weiboData[1]
+        }, {
+            name: '强',
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            symbolSize: 1,
+            large: true,
+            itemStyle: {
+                normal: {
+                    shadowBlur: 2,
+                    shadowColor: 'rgba(255, 255, 255, 0.8)',
+                    color: 'rgba(255, 255, 255, 0.8)'
+                }
+            },
+            data: weiboData[2]
+        }]
+    });
+});;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>
