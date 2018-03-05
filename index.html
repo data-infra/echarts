@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="container" style="height: 100%"></div>
+<!--所需js文件-->
+
+
+<script type="text/javascript" src="js/echarts-all-3.js"></script>
+<script type="text/javascript" src="js/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="js/extension/jquery-2.2.4.js"></script>
+<script type="text/javascript" src="js/map/js/china.js"></script>
+<script type="text/javascript" src="js/map/js/world.js"></script>
+<script type="text/javascript" src="js/api.js"></script>
+<script type="text/javascript" src="js/extension/bmap.min.js"></script>
+<script type="text/javascript" src="index.js"></script>    <!--  配置图表6大公共组件  -->
+<script type="text/javascript" src="coordinate-grid.js"></script>    <!--  配置对应的坐标系  -->
+<script type="text/javascript" src="series-bar.js"></script>    <!--  配置对应的图表类型  -->
+
+<!--代码-->
+<script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);               /*  使用dom初始化echarts，创建echartsInstance*/
+myChart.showLoading();                          /*  加载缓冲图 */
+option={                                         /*  对应需要设置配置  */
+    title:title,                                //全部都在js中
+//...
+};
+myChart.setOption(option);                      /*  应用配置选项  */
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+myChart.hideLoading();                           /*  隐藏缓冲图 */
+
+
+</script>
+</body>
+</html>
