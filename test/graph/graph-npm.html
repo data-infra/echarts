@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="../../js/echarts-all-3.js"></script>
+       <script type="text/javascript" src="../../js/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="../../js/extension/jquery-2.2.4.js"></script>
+       <script type="text/javascript" src="../../js/map/js/china.js"></script>
+       <script type="text/javascript" src="../../js/map/js/world.js"></script>
+       <script type="text/javascript" src="../../js/api.js"></script>
+       <script type="text/javascript" src="../../js/extension/bmap.min.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+myChart.showLoading();
+$.getJSON('npmdepgraph.min10.json', function (json) {
+    myChart.hideLoading();
+    var categories = ["邮件","传真","话音"];
+
+    myChart.setOption(option = {
+        title: {
+            text: '人物关系网',
+            subtext:"统计人：栾鹏",
+            left: 'center',
+            top: 'bottom',
+        },
+        legend: [{
+            // selectedMode: 'single',
+            data: categories.map(function (a) {
+                return a.name;
+            })
+        }],
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series : [
+            {
+                type: 'graph',
+                layout: 'none',   //如果要使用力引导布局，可以将 layout 配置项设为'force'。 'circular' 采用环形布局
+                categories: categories,
+                // progressiveThreshold: 700,
+                data: json.nodes.map(function (node) {
+                    return {
+                        x: node.x,
+                        y: node.y,
+                        id: node.id,
+                        name: node.label,
+                        symbolSize: node.size,
+                        itemStyle: {
+                            normal: {
+                                color: node.color
+                            }
+                        }
+                    };
+                }),
+                //edgeSymbol   边两端的标记类型，可以是一个数组分别指定两端，也可以是单个统一指定。默认不显示标记，常见的可以设置为箭头，如下：edgeSymbol: ['circle', 'arrow']
+                edges: json.edges.map(function (edge) {
+                    return {
+                        source: edge.sourceID,
+                        target: edge.targetID
+                    };
+                }),
+                //图形上的文本标签
+                label: {
+                    //normal 是图形在默认状态下的样式；emphasis 是图形在高亮状态下的样式，
+                    emphasis: {
+                        position: 'right',
+                        show: true
+                    }
+                },
+
+                roam: true,   //是否开启鼠标缩放和平移漫游   如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'
+                focusNodeAdjacency: true,  //是否在鼠标移到节点上的时候突出显示节点以及节点的边和邻接节点。
+                lineStyle: {
+                    normal: {
+                       /* color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                            offset: 0, color: 'red' // 0% 处的颜色
+                        }, {
+                            offset: 1, color: 'blue' // 100% 处的颜色
+                        }], false),*/
+                        type:"dotted",    //线的类型。
+                        width: 0.5,   //线宽。
+                        curveness: 0.3,   //边的曲度，支持从 0 到 1 的值，值越大曲度越大。
+                        opacity: 0.7   //图形透明度。支持从 0 到 1 的数字，为 0 时不绘制该图形。
+                    }
+                }
+            }
+        ]
+    }, true);
+});
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>
