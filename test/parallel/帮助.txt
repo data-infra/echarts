@@ -1,0 +1,1 @@
+该目录为parallel型图表的demo
